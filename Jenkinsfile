@@ -1,41 +1,25 @@
-pipeline {
-    agent any
+node {
+  try {
+    stage('Clone') { git branch: 'main', url: 'https://github.com/Ishaan-007/test-app.git' }
 
-    stages {
-
-        stage('Clone') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Ishaan-007/test-app.git'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                '''
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh '''
-                    . venv/bin/activate
-                    pytest
-                '''
-            }
-        }
+    stage('Build') {
+      sh '''
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+      '''
     }
 
-    post {
-        success {
-            echo 'Pipeline OK'
-        }
-        failure {
-            echo 'Pipeline FAILED'
-        }
+    stage('Test') {
+      sh '''
+        . venv/bin/activate
+        pytest
+      '''
     }
+    echo "Scripted Pipeline succeeded"
+  } catch (e) {
+    echo "Scripted Pipeline failed"
+    throw e
+  }
 }
