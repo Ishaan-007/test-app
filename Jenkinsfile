@@ -1,4 +1,4 @@
-node {
+node('agent') {
   try {
     stage('Clone') { git branch: 'main', url: 'https://github.com/Ishaan-007/test-app.git' }
 
